@@ -1,8 +1,12 @@
 module.exports.getAllProductsById = async (event) => {
+
+    const productId = event.pathParameters.productId;
+
     return {
       statusCode: 200,
       body: JSON.stringify(
         {
+          mess: productId,
           productName: "ById",
           price: 500
         }
