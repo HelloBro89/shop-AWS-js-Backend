@@ -1,6 +1,9 @@
+const productList = require('../productList.json');
+
 module.exports.getAllProductsById = async (event) => {
 
-   const productId = event.pathParameters.productId;
+  const params = event.pathParameters.productId;
+  const productById = productList.find(item => item.id === params);
 
     return {
       statusCode: 200,
@@ -10,7 +13,7 @@ module.exports.getAllProductsById = async (event) => {
       },
       body: JSON.stringify(
         {
-         // here will return an object from array by {productId} 
+          productById
         }
       ),
     };

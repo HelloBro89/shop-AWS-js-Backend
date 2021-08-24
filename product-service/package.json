@@ -1,0 +1,22 @@
+{
+  "name": "product-service",
+  "version": "1.0.0",
+  "description": "BackEnd  for FE shop-app with microservice AWS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HelloBro89/BackEndAWS-mono_shop-app.git"
+  },
+  "author": "HelloBro89",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HelloBro89/BackEndAWS-mono_shop-app/issues"
+  },
+  "homepage": "https://github.com/HelloBro89/BackEndAWS-mono_shop-app#readme",
+  "dependencies": {
+    "serverless-modular": "^0.0.61"
+  }
+}
