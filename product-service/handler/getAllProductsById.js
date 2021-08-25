@@ -1,7 +1,5 @@
 'use strict';
-import productList from '../productList';
-// const productList = require('../productList.json');
-
+import productList from './productList';
 
 export const getAllProductsById = async event => {
 
@@ -20,8 +18,5 @@ export const getAllProductsById = async event => {
         }
       ),
     };
-  
-    // Use this code if you don't use the http event with the LAMBDA-PROXY integration
-    // return { message: 'Go Serverless v1.0! Your function executed successfully!', event };
   };
   
