@@ -1,6 +1,9 @@
-const productList = require('../productList.json');
+'use strict';
+import productList from '../productList';
+// const productList = require('../productList.json');
 
-module.exports.getAllProductsById = async (event) => {
+
+export const getAllProductsById = async event => {
 
   const params = event.pathParameters.productId;
   const productById = productList.find(item => item.id === params);
