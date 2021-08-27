@@ -1,5 +1,5 @@
 'use strict';
-import productList from './productList';
+import productList from './productList.mjs';
 
 
 export const getAllProducts = async event => {

@@ -4,7 +4,7 @@
   "description": "BackEnd  for FE shop-app with microservice AWS",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --config=./jest.config.json"
   },
   "repository": {
     "type": "git",
@@ -17,7 +17,10 @@
   },
   "homepage": "https://github.com/HelloBro89/BackEndAWS-mono_shop-app#readme",
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
     "babel-loader": "^8.2.2",
+    "jest": "^27.0.6",
     "serverless-webpack": "^5.5.1",
     "webpack": "^5.51.1",
     "webpack-node-externals": "^3.0.0"

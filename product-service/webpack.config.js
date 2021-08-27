@@ -14,7 +14,7 @@ module.exports = {
         hints: false
     },
     resolve: {
-        extensions: ['.js', '.json'],
+        extensions: ['.js', 'mjs','.json'],
       },
     module: {
         rules: [
