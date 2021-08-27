@@ -75,7 +75,7 @@ functions:
           method: get
           cors: true
   getAllProductsById:
-    handler: handler/getAllProductsById.getAllProductsById
+    handler: handler/getProductsById.getProductsById
     events:
       - http:
           path: /products/{productId}

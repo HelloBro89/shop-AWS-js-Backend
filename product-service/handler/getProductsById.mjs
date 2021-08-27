@@ -1,7 +1,7 @@
 'use strict';
 import productList from './productList.mjs';
 
-export const getAllProductsById = async event => {
+export const getProductsById = async event => {
 
   const params = event.pathParameters.productId;
   const productById = productList.find(item => item.id === params);
@@ -12,11 +12,7 @@ export const getAllProductsById = async event => {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true,
       },
-      body: JSON.stringify(
-        {
-          productById
-        }
-      ),
+      body: JSON.stringify(productById),
     };
   };
   
