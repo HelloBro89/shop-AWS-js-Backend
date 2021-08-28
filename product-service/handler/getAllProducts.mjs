@@ -3,7 +3,7 @@ import productList from './productList.mjs';
 
 export const getAllProducts = async event => {
 
-   console.log("Get all products: ", event);
+   console.log("Get all products: ", event)
 
    try {
 
