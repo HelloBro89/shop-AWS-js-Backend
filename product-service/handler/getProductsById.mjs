@@ -3,9 +3,11 @@ import productList from './productList.mjs';
 
 export const getProductsById = async event => {
 
+  console.log("Get product by ID: ", event);
+
 try {
   
-  const params = event.pathParameters.productId;
+  const params = await event.pathParameters.productId;
   const productById = productList.find(item => item.id === params);
   
   if (productById){

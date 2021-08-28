@@ -3,6 +3,8 @@ import productList from './productList.mjs';
 
 export const getAllProducts = async event => {
 
+   console.log("Get all products: ", event);
+
    try {
 
     if (productList.length > 0) {
