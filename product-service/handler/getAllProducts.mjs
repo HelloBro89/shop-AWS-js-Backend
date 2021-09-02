@@ -1,58 +1,43 @@
 'use strict';
-import productList from './productList.mjs';
+import PG from 'pg';
+const { Client } = PG;
+
+const { PG_HOST, PG_PORT, PG_DATABASE, PG_USERNAME, PG_PASSWORD } = process.env;
+
+const dbOptions = {
+   host: PG_HOST,
+   port: PG_PORT,
+   database: PG_DATABASE,
+   user: PG_USERNAME,
+   password: PG_PASSWORD,
+   ssl: {
+      rejectUnauthorized: false
+   },
+   connectionTimeoutMillis: 5000
+};
 
 export const getAllProducts = async event => {
+   const client = new Client(dbOptions);
+   await client.connect();
 
-   console.log("Get all products: ", event);
+   console.log("**********Get logs of: ", event);
 
    try {
-     return {
-       statusCode: 200,
-        headers: {
+      const products = await client.query(`select * from products`);
+      return {
+         statusCode: 200,
+         headers: {
          'Access-Control-Allow-Origin': '*',
          'Access-Control-Allow-Credentials': true,
        },
-
-       body: JSON.stringify(productList),
+       body: JSON.stringify(products),
     };
    } catch (e) {
-       console.log("Error: ", e);
+       console.log("******Error: ", e);
+  } finally {
+     client.end()
   }
 };
 
 
 
-
-// 'use strict';
-// import productList from './productList.mjs';
-// 
-// export const getAllProducts = async event => {
-// 
-//    console.log("Get all products: ", event)
-// 
-//    try {
-// 
-//     if (productList.length > 0) {
-//      return {
-//        statusCode: 200,
-//         headers: {
-//          'Access-Control-Allow-Origin': '*',
-//          'Access-Control-Allow-Credentials': true,
-//        },
-// 
-//        body: JSON.stringify(productList),
-//     };
-//   } 
-//      return {
-//         tatusCode: 404,
-//        headers: {
-//           'Access-Control-Allow-Origin': '*',
-//          'Access-Control-Allow-Credentials': true,
-//     },
-//    body: JSON.stringify({message: 'Product not found'}),
-//     };
-// 
-//     } catch (e) {
-//        console.log("Error: ", e);
-//   }
-// };

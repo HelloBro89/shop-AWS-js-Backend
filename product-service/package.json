@@ -21,11 +21,13 @@
     "@babel/preset-env": "^7.15.0",
     "babel-loader": "^8.2.2",
     "jest": "^27.0.6",
+    "serverless-dotenv-plugin": "^3.9.0",
     "serverless-webpack": "^5.5.1",
     "webpack": "^5.51.1",
     "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "pg": "^8.7.1",
     "source-map-support": "^0.5.19"
   }
 }
