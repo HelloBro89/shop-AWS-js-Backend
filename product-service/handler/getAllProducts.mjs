@@ -23,7 +23,7 @@ export const getAllProducts = async event => {
    console.log("**********Get logs of: ", event);
 
    try {
-      const products = await client.query(`select * from products`);
+      const {rows: products} = await client.query(`select * from products`);
       return {
          statusCode: 200,
          headers: {
