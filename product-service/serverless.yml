@@ -85,6 +85,13 @@ functions:
           path: /products/{productId}
           method: get
           cors: true
+  addNewItem:
+    handler: handler/addNewItem.addNewItem
+    events:
+      - http:
+          path: /products
+          method: post
+          cors: true
             
 # environment:
 #   PG_HOST: PG_HOST
