@@ -35,11 +35,7 @@ export const addNewItem = async event => {
             idPrimary: primaryKeyID}),
      };
     } catch(e) {
-        console.log("*****Error: ", e);
-        console.log("*****Error: ", e.name);
-        console.log(`********Error type  ${typeof e.name}`)
         await client.query('ROLLBACK');
-        console.log("*****Error: ", e);
         if (e.name === 'SyntaxError' || e.code === '42703') {
             console.log("*****Error SyntaxError: ", e);
             return {
@@ -58,7 +54,9 @@ export const addNewItem = async event => {
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Credentials': true,
             },
-             body: JSON.stringify({message: "Unexpected error"}),
+             body: JSON.stringify({
+                     message: "Unexpected error"
+                    }),
          };
         };
 
