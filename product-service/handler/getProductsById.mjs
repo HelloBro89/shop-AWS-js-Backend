@@ -7,7 +7,6 @@ export const getProductsById = async event => {
 
   console.log("***********Get product by ID: ", event);
   
- 
   try {
     const params = await event.pathParameters.productId;
     
@@ -15,8 +14,6 @@ export const getProductsById = async event => {
 
     const {rows: productById} = await client.query(`select id, count, price, title, description from products p left join stocks s on p.id = s.product_id where id in ('${params}')`);
     
-    console.log("************ TESTESTESTSETSETSETSE", productById[0]);
-
     if (productById[0]) {
       return {
         statusCode: 200,
@@ -38,9 +35,7 @@ export const getProductsById = async event => {
       
    } catch (e) {
      
-    //  console.log("***********Error: ", e);
-
-     if (/* e.name === 'SyntaxError' || e.code === '42703' || */ e.code === '22P02') {
+     if (e.code === '22P02') {
       console.log("*****Error SyntaxError: ", e);
       return {
           statusCode: 400,

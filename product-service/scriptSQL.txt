@@ -17,8 +17,10 @@
 
 --                       	 создание данных в таблице "Products"
 
---insert into products (title, description, price ) values
 -- returning <column name> - вернёт значение только что созданного поля(строки) если добавить в конец запроса
+
+
+--insert into products (title, description, price ) values
 --('Salar de Uyuni, Bolivia', 'It is considered one of the most extreme and remarkable vistas in all of South America, if not Earth', 500),
 --('Mountains Zhangye Danxia, China', 'It is known for its unusual cliff colors, which are smooth, sharp and several hundred meters high', 10),
 --('Plitvice Lakes National Park, Croatia', 'It is the oldest and largest national park in the Republic of Croatia', 23),
