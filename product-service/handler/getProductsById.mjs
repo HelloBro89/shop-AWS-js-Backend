@@ -14,6 +14,8 @@ export const getProductsById = async event => {
     console.log(`***********Get params of request. Id = ${params}`);
 
     const {rows: productById} = await client.query(`select id, count, price, title, description from products p left join stocks s on p.id = s.product_id where id in ('${params}')`);
+  
+
     if (productById){
       return {
         statusCode: 200,
@@ -21,7 +23,7 @@ export const getProductsById = async event => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Credentials': true,
           },
-          body: JSON.stringify(productById),
+          body: JSON.stringify(productById[0]),
          };
       }
     return {
