@@ -16,14 +16,15 @@ service: import-service
 #app: your-app-name
 #org: your-org-name
 
-# custom:
-#   webpack:
-#     webpackConfig: webpack.config.js
-#     includeModules: true
+custom:
+  webpack:
+    webpackConfig: webpack.config.js
+    includeModules: true
 
-# plugins:
+plugins:
+    - serverless-webpack
 #     - serverless-dotenv-plugin
-#     - serverless-webpack
+    
 
 # You can pin your service to only deploy with a specific Serverless version
 # Check out our docs for more details
@@ -71,27 +72,14 @@ provider:
 #    - include-me-dir/**
 
 functions:
-  getAllProducts:
-    handler: handler/getAllProducts.getAllProducts
+  importProductsFile:
+    handler: handler/importProductsFile.importProductsFile
     events:
       - http:
-          path: /products
+          path: /import
           method: get
           cors: true
-  getAllProductsById:
-    handler: handler/getProductsById.getProductsById
-    events:
-      - http:
-          path: /products/{productId}
-          method: get
-          cors: true
-  addNewItem:
-    handler: handler/addNewItem.addNewItem
-    events:
-      - http:
-          path: /products
-          method: post
-          cors: true
+
             
 # environment:
 #   PG_HOST: PG_HOST

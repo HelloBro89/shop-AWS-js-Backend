@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "handler.js",
-  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,5 +11,10 @@
   "dependencies": {
     "aws-sdk": "^2.988.0",
     "csv-parser": "^3.0.0"
+  },
+  "devDependencies": {
+    "babel-loader": "^8.2.2",
+    "serverless-webpack": "^5.5.4",
+    "webpack-node-externals": "^3.0.0"
   }
 }
