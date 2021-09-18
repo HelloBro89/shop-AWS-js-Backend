@@ -3,24 +3,22 @@ import AWS from 'aws-sdk';
 const BUCKET = 'uploaded-product';
 
 export const importProductsFile = async (event) => {
+
   const s3 = new AWS.S3({region: 'eu-west-1'});
-
-  // const catalogPath = `uploaded/USA.csv`;
-
   const { name } = event.queryStringParameters;
-  console.log(`NAME: ${name}`)
+  const catalogPath = `uploaded/${name}`;
+  console.log(`NAME: ${name}`);
 
-  let status = 200;
- 
   const params = {
     Bucket: BUCKET,
-    Key: `uploaded/${name}`,
+    Key: catalogPath,
     Expires: 60,
     ContentType: 'text/csv'
   };
 
   try {
-    let signURL = await new Promise ((resolve, reject) => {
+
+    const signURL = await new Promise ((resolve, reject) => {
 
       return s3.getSignedUrl('putObject', params, (error, signURL) => {
         
@@ -32,25 +30,29 @@ export const importProductsFile = async (event) => {
     });
  })
 
- console.log(`Test URL ${signURL}`);
- console.log(`TYPEOF:  ${typeof signURL}`);
+  console.log(`TEST CHECK URL: ${signURL}`)
    
+  return {
+    statusCode: 200,
+    headers: {
+
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': true,
+  },
+  body: signURL
+}
+
   } catch (error) {
     console.log(error);
-    status = 500;
+    return {
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: signURL
+    }
   };
-
-
-  const response = {
-    statusCode: status,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Credentials': true,
-    },
-    body: signURL
-  };
-    return response;
-
 };
 
 
