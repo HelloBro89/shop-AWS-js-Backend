@@ -26,8 +26,6 @@ plugins:
 #     - serverless-dotenv-plugin
     
 
-# You can pin your service to only deploy with a specific Serverless version
-# Check out our docs for more details
 frameworkVersion: '2'
 # useDotenv: true
 configValidationMode: error
@@ -41,7 +39,6 @@ provider:
   region: eu-west-1
  
 
-# you can add statements to the Lambda function's IAM Role here
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -79,8 +76,15 @@ functions:
             parameters:
               querystrings:
                 name: true
-  # importFileParser:
-  #   handler: handler/importFileParser.importFileParser
+  importFileParser:
+    handler: handler/importFileParser.importFileParser
+    events:
+      - s3:
+          bucket: uploaded-product
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: uploaded/
+          existing: true
 
   
 #    The following are a few example events you can configure

@@ -30,7 +30,7 @@ export const importProductsFile = async (event) => {
     });
  })
 
-  console.log(`TEST CHECK URL: ${signURL}`)
+  console.log(`TEST CHECK URL: ${signURL}`);
    
   return {
     statusCode: 200,
