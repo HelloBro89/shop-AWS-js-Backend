@@ -7,31 +7,30 @@ export const importProductsFile = async (event) => {
   const s3 = new AWS.S3({region: 'eu-west-1'});
   const { name } = event.queryStringParameters;
   
-  // console.log(event);
-  // console.log(`CHECK NAME: ${name}`);
+  console.log(`CHECK EVENT ${event}`);
+  console.log(`CHECK NAME: ${name}`);
+
   // console.log(`CHECK TYPEOF: ${typeof name}`);
   // console.log(`CHECK NAME LENGTH: ${name.length}`);
   // console.log(`CHECK LAST LETTERS: ${name.indexOf('.csv', name.length - 4)}`)
   // console.log(`CHECK LAST LETTERS: ${name.indexOf('.csv', name.length - 4) === -1}`)
-  if (name.indexOf('.csv', name.length - 4) === -1 ) {
 
-    console.log(`******************`)
-
-    return {
-      statusCode: 400,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Credentials': true,
-      },
-      body: JSON.stringify({
-        message: `The file extension must be csv or the property name is missing`
-     }),
-    }
-  }
+// // handler error properties - [name] and extension csv
+//   if (!name || name.indexOf('.csv', name.length - 4) === -1 ) {
+// 
+//     return {
+//       statusCode: 400,
+//       headers: {
+//         'Access-Control-Allow-Origin': '*',
+//         'Access-Control-Allow-Credentials': true,
+//       },
+//       body: JSON.stringify({
+//         message: `The file extension must be csv or the property name is missing`
+//      }),
+//     }
+//   }
 
   const catalogPath = `uploaded/${name}`;
-
-
 
   const params = {
     Bucket: BUCKET,
@@ -53,7 +52,7 @@ export const importProductsFile = async (event) => {
       });
     })
 
-    // console.log(`TEST CHECK URL: ${signURL}`);
+    console.log(`CHECK URL: ${signURL}`);
    
     return {
       statusCode: 200,
@@ -65,16 +64,16 @@ export const importProductsFile = async (event) => {
     }
 
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     return {
       statusCode: 500,
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true,
       },
-      body: {
+      body: JSON.stringify({
         message: `Unhandled error!!!`
-      }
+      })
     }
   };
 };
