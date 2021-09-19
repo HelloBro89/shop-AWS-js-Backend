@@ -6,8 +6,32 @@ export const importProductsFile = async (event) => {
 
   const s3 = new AWS.S3({region: 'eu-west-1'});
   const { name } = event.queryStringParameters;
+  
+  // console.log(event);
+  // console.log(`CHECK NAME: ${name}`);
+  // console.log(`CHECK TYPEOF: ${typeof name}`);
+  // console.log(`CHECK NAME LENGTH: ${name.length}`);
+  // console.log(`CHECK LAST LETTERS: ${name.indexOf('.csv', name.length - 4)}`)
+  // console.log(`CHECK LAST LETTERS: ${name.indexOf('.csv', name.length - 4) === -1}`)
+  if (name.indexOf('.csv', name.length - 4) === -1 ) {
+
+    console.log(`******************`)
+
+    return {
+      statusCode: 400,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: JSON.stringify({
+        message: `The file extension must be csv or the property name is missing`
+     }),
+    }
+  }
+
   const catalogPath = `uploaded/${name}`;
-  console.log(`NAME: ${name}`);
+
+
 
   const params = {
     Bucket: BUCKET,
@@ -22,76 +46,35 @@ export const importProductsFile = async (event) => {
 
       return s3.getSignedUrl('putObject', params, (error, signURL) => {
         
-        if (error || !signURL) {
+      if (error || !signURL) {
           reject(error);
-         }
-        
-        resolve(signURL);
-    });
- })
+      }
+      resolve(signURL);
+      });
+    })
 
-  console.log(`TEST CHECK URL: ${signURL}`);
+    // console.log(`TEST CHECK URL: ${signURL}`);
    
-  return {
-    statusCode: 200,
-    headers: {
-
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Credentials': true,
-  },
-  body: signURL
-}
-
-  } catch (error) {
-    console.log(error);
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Credentials': true,
       },
       body: signURL
     }
+
+  } catch (error) {
+    // console.log(error);
+    return {
+      statusCode: 500,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true,
+      },
+      body: {
+        message: `Unhandled error!!!`
+      }
+    }
   };
 };
-
-
-
-
-
-// 'use strict';
-// import AWS from 'aws-sdk';
-// const BUCKET = 'uploaded-product';
-// 
-// export const importProductsFile = async (event) => {
-//   const s3 = new AWS.S3({region: 'eu-west-1'});
-//   let status = 200;
-//   let thumbnails = [];
-//   const params = {
-//     Bucket: BUCKET,
-//     Prefix: 'uploaded/'
-//   };
-// 
-//   try {
-//     const s3Response = await s3.listObjectsV2(params).promise();
-//     thumbnails = s3Response.Contents;
-//   } catch (error) {
-//     console.log(error);
-//     status = 500;
-//   };
-// 
-//   const response = {
-//     statusCode: status,
-//     headers: {
-//       'Access-Control-Allow-Origin': '*',
-//       'Access-Control-Allow-Credentials': true,
-//     },
-//     body: JSON.stringify(
-//       thumbnails
-//       .filter(thumbnails => thumbnails.Size)
-//       .map(thumbnails => `https://${BUCKET}.s3.amazonaws.com/${thumbnails.Key}`)
-//     )
-//   };
-//     return response;
-// 
-// };
