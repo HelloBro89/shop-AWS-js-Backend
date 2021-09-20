@@ -1,7 +1,6 @@
 'use strict';
 import AWS from 'aws-sdk';
 import * as csv from 'csv-parser';
-// const BUCKET = 'uploaded-product';
 
 export const importFileParser = async (event) => {
     const s3 = new AWS.S3({region: 'eu-west-1'});
@@ -11,8 +10,6 @@ export const importFileParser = async (event) => {
 
         for (const record of event.Records) {
             
-            // event.Records.forEach(records => {
-
             const BUCKET = record.s3.bucket.name;
             const key = record.s3.object.key;
 
@@ -26,7 +23,7 @@ export const importFileParser = async (event) => {
             await new Promise((resolve, reject) => {
                 s3.getObject(params).createReadStream().pipe(csv())
                 .on('data', (data) => {
-                    console.log(data);
+                    console.log(`Data file:  ${JSON.stringify(data)}`);
                 })
                 .on('error', err => {
                     reject(`Failed: ${err}`)

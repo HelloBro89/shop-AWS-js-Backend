@@ -10,26 +10,6 @@ export const importProductsFile = async (event) => {
   console.log(`CHECK EVENT ${event}`);
   console.log(`CHECK NAME: ${name}`);
 
-  // console.log(`CHECK TYPEOF: ${typeof name}`);
-  // console.log(`CHECK NAME LENGTH: ${name.length}`);
-  // console.log(`CHECK LAST LETTERS: ${name.indexOf('.csv', name.length - 4)}`)
-  // console.log(`CHECK LAST LETTERS: ${name.indexOf('.csv', name.length - 4) === -1}`)
-
-// // handler error properties - [name] and extension csv
-//   if (!name || name.indexOf('.csv', name.length - 4) === -1 ) {
-// 
-//     return {
-//       statusCode: 400,
-//       headers: {
-//         'Access-Control-Allow-Origin': '*',
-//         'Access-Control-Allow-Credentials': true,
-//       },
-//       body: JSON.stringify({
-//         message: `The file extension must be csv or the property name is missing`
-//      }),
-//     }
-//   }
-
   const catalogPath = `uploaded/${name}`;
 
   const params = {

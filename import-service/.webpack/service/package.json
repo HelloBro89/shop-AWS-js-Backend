@@ -1,0 +1,11 @@
+{
+  "name": "import-service",
+  "version": "1.0.0",
+  "description": "Packaged externals for import-service",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "aws-sdk": "^2.988.0",
+    "csv-parser": "^3.0.0"
+  }
+}
