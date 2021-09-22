@@ -3,7 +3,7 @@ import AWS from 'aws-sdk';
 import { importProductsFile } from '../handler/importProductsFile.js';
 
 
-const mockedUrl = 'https://uploaded-product.s3.eu-west-1.amazonaws.com/uploaded';
+const mockUrl = 'https://uploaded-product.s3.eu-west-1.amazonaws.com/uploaded';
 
 
 test('ImportProductsFile lambda: to be return the signURL', async () => {
@@ -15,13 +15,14 @@ test('ImportProductsFile lambda: to be return the signURL', async () => {
 
     AWSMock.setSDKInstance(AWS);
     AWSMock.mock('S3', 'getSignedUrl', (action, params, callback) => {
-        callback(null, mockedUrl);
+        callback(null, mockUrl);
         });
 
     const executionResult = await importProductsFile(mockEvent);
+    console.log(executionResult)
     const { body, statusCode } = executionResult;
 
-    expect(body).toEqual(mockedUrl);
+    expect(body).toEqual(mockUrl);
     expect(statusCode).toBe(200);
 
     AWSMock.restore();
