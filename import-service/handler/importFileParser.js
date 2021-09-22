@@ -21,7 +21,9 @@ export const importFileParser = async (event) => {
             console.log(`CHECK PARAMS  ${params}`);
 
             await new Promise((resolve, reject) => {
-                s3.getObject(params).createReadStream().pipe(csv())
+
+                s3.getObject(params).createReadStream()
+                .pipe(csv())
                 .on('data', (data) => {
                     console.log(`Data file:  ${JSON.stringify(data)}`);
                 })
@@ -33,7 +35,6 @@ export const importFileParser = async (event) => {
                     console.log(`Copy from ${BUCKET}/${key}`);
 
                     await s3.copyObject({
-
                         Bucket: BUCKET,
                         CopySource: `${BUCKET}/${key}`,
                         Key: key.replace('uploaded', 'parser')
@@ -51,16 +52,6 @@ export const importFileParser = async (event) => {
                 });
             })
         }
-
-        return {
-            statusCode: 204,
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Credentials': true,
-            },
-            body: null
-      }
-
   } catch (error) {
       console.log(error);
       return {
