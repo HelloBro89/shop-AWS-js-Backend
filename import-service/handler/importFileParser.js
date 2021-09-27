@@ -4,6 +4,8 @@ import * as csv from 'csv-parser';
 
 export const importFileParser = async (event) => {
     const s3 = new AWS.S3({region: 'eu-west-1'});
+    const sqs = new AWS.SQS();
+    
     console.log(`CHEKC EVENT: ${JSON.stringify(event)}`);
 
     try {
@@ -26,6 +28,13 @@ export const importFileParser = async (event) => {
                 .pipe(csv())
                 .on('data', (data) => {
                     console.log(`Data file:  ${JSON.stringify(data)}`);
+                    sqs.sendMessage({
+                        QueueUrl: process.env.SQS_URL,
+                        MessageBody: JSON.stringify(data)
+                    }, () => {
+                        console.log(`SEND MESSAGE FOR: ${JSON.stringify(data)}`) //  instead of a callback, you can listen to the response and the response has a send method
+                    });
+
                 })
                 .on('error', err => {
                     reject(`Failed: ${err}`)
@@ -33,6 +42,8 @@ export const importFileParser = async (event) => {
                 .on('end', async () => {
 
                     console.log(`Copy from ${BUCKET}/${key}`);
+                    
+                    
 
                     await s3.copyObject({
                         Bucket: BUCKET,
