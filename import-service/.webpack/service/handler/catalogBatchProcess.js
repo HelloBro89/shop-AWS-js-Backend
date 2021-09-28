@@ -54,6 +54,8 @@ __webpack_require__.d(__webpack_exports__, {
   "catalogBatchProcess": () => (/* binding */ catalogBatchProcess)
 });
 
+;// CONCATENATED MODULE: external "aws-sdk"
+const external_aws_sdk_namespaceObject = require("aws-sdk");
 ;// CONCATENATED MODULE: external "pg"
 const external_pg_namespaceObject = require("pg");
 var external_pg_default = /*#__PURE__*/__webpack_require__.n(external_pg_namespaceObject);
@@ -83,12 +85,16 @@ const dbOptions = {
 
 ;// CONCATENATED MODULE: ./handler/catalogBatchProcess.js
 
+
 const catalogBatchProcess = async event => {
   const client = new Client(dbOptions);
   await client.connect();
   const items = await event.Records.map(({
     body
   }) => body);
+  const sns = new external_aws_sdk_namespaceObject.SNS({
+    region: 'eu-west-1'
+  });
 
   try {
     for (let item of items) {
@@ -100,10 +106,11 @@ const catalogBatchProcess = async event => {
       } = JSON.parse(item);
 
       if (!price || !title || !description || !count) {
-        throw new ValidationError(`Product data is invalid`);
+        throw new Error(`Product data is invalid`);
       }
 
       ;
+      await client.query('BEGIN');
       const addReqToProductDB = `insert into products (title, description, price ) values ('${title}', '${description}', ${price}) returning id`;
       const resFromProductDB = await client.query(addReqToProductDB);
       const primaryKeyID = resFromProductDB.rows[0].id;
@@ -111,11 +118,24 @@ const catalogBatchProcess = async event => {
       await client.query(addReqToStockDB);
       await client.query('COMMIT');
     }
+
+    const params = {
+      Subject: 'Products have been created in your DB',
+      Message: items,
+      TopicArn: process.env.SNS_ARN
+    };
+    console.log(`****Params: ${JSON.stringify(params)}`);
+    console.log(`****ITEMS: ${JSON.stringify(items)}`);
+    console.log(`****ITEMS how obj: ${items}`);
+    sns.publish(params, () => {
+      console.log("Success");
+    });
   } catch (e) {
-    console.log(`*****E NAME: ${e.name}`);
+    console.log(`*****ERROR MESSAGE: ${e.message}`);
+    console.log(`*****ERROR NAME: ${e.name}`);
     await client.query('ROLLBACK');
 
-    if (e.name === 'ValidationError') {
+    if (e.message === 'Product data is invalid') {
       console.log("*****Error SyntaxError: ", e);
       return {
         statusCode: 400,
@@ -128,7 +148,7 @@ const catalogBatchProcess = async event => {
         })
       };
     } else {
-      console.log("*****Error status 500: ", e);
+      console.log("*****Error status 500: Unexpected error: ", e);
       return {
         statusCode: 500,
         headers: {
