@@ -43,8 +43,6 @@ export const importFileParser = async (event) => {
 
                     console.log(`Copy from ${BUCKET}/${key}`);
                     
-                    
-
                     await s3.copyObject({
                         Bucket: BUCKET,
                         CopySource: `${BUCKET}/${key}`,

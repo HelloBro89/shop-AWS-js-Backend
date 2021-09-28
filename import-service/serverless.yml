@@ -10,11 +10,11 @@ custom:
 
 plugins:
     - serverless-webpack
-#     - serverless-dotenv-plugin
+    - serverless-dotenv-plugin
     
 
 frameworkVersion: '2'
-# useDotenv: true
+useDotenv: true
 configValidationMode: error
 
 
@@ -87,13 +87,6 @@ functions:
              Fn::GetAtt:
                - SQSQueue
                - Arn
-    # events:
-    #   - sqs:
-    #     batchSize: 5
-    #     arn:
-    #       Fn::GetAtt:
-    #         - SQSQueue
-    #         - Arn
 
   
 #    The following are a few example events you can configure
