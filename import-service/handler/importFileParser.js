@@ -27,12 +27,17 @@ export const importFileParser = async (event) => {
                 s3.getObject(params).createReadStream()
                 .pipe(csv())
                 .on('data', (data) => {
-                    console.log(`Data file:  ${JSON.stringify(data)}`);
+                    // console.log(`Data file:  ${JSON.stringify(data)}`);
                     sqs.sendMessage({
                         QueueUrl: process.env.SQS_URL,
                         MessageBody: JSON.stringify(data)
-                    }, () => {
-                        console.log(`SEND MESSAGE FOR: ${JSON.stringify(data)}`) //  instead of a callback, you can listen to the response and the response has a send method
+                    }, (error) => {
+                        if (error) {
+                            console.log(`*****ERROR SEMDING MESSAGE: ${error}`)
+                        } else {
+                            console.log(`SEND MESSAGE FOR: ${JSON.stringify(data)}`) //  instead of a callback, you can listen to the response and the response has a send method
+                        }
+
                     });
 
                 })

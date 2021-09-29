@@ -92,9 +92,6 @@ const catalogBatchProcess = async event => {
   const items = await event.Records.map(({
     body
   }) => body);
-  const sns = new external_aws_sdk_namespaceObject.SNS({
-    region: 'eu-west-1'
-  });
 
   try {
     for (let item of items) {
@@ -119,20 +116,37 @@ const catalogBatchProcess = async event => {
       await client.query('COMMIT');
     }
 
+    const sns = new external_aws_sdk_namespaceObject.SNS({
+      region: 'eu-west-1'
+    });
     const params = {
       Subject: 'Products have been created in your DB',
-      Message: items,
+      Message: `${JSON.stringify(items)}`,
       TopicArn: process.env.SNS_ARN
     };
     console.log(`****Params: ${JSON.stringify(params)}`);
-    console.log(`****ITEMS: ${JSON.stringify(items)}`);
-    console.log(`****ITEMS how obj: ${items}`);
-    sns.publish(params, () => {
-      console.log("Success");
-    });
+    console.log(`****ITEMS: ${JSON.stringify(items)}`); // sns.publish(params, async (error) => {
+    //         if (error) {
+    //         console.log(`********HANDLED ERROR ${error}`);
+    //     } else {
+    //             console.log("******Success!!!")
+    //     }
+    // });
+
+    const test = await sns.publish(params).promise();
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': true
+      },
+      body: JSON.stringify({
+        message: test
+      })
+    };
   } catch (e) {
-    console.log(`*****ERROR MESSAGE: ${e.message}`);
-    console.log(`*****ERROR NAME: ${e.name}`);
+    // console.log(`*****ERROR MESSAGE: ${e.message}`);
+    // console.log(`*****ERROR NAME: ${e.name}`);
     await client.query('ROLLBACK');
 
     if (e.message === 'Product data is invalid') {
