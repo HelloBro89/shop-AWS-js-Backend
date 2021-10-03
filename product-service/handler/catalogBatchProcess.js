@@ -7,7 +7,8 @@ export const catalogBatchProcess = async (event) => {
     await client.connect();
     console.log(`******CHECK EVENT  ${JSON.stringify(event)}`);
     const items = await event.Records.map(({body}) => body );
-    
+    let resFromSns;
+
     try {
         for (let item of items) {
             const { price, title, description, count } = JSON.parse(item);
@@ -22,19 +23,26 @@ export const catalogBatchProcess = async (event) => {
             const addReqToStockDB =  `insert into stocks (product_id, count ) values ('${primaryKeyID}', ${count})`;
             await client.query(addReqToStockDB);
             await client.query('COMMIT');
+    
+            const sns = new SNS({region: 'eu-west-1'});
+
+            const filteredPrice = (Number(price) > 999) ? 'moreThousand' : 'lessThousand';
+
+            console.log(`******CHECK RESULT ${filteredPrice}`);
+            const params = {
+                Subject: 'Products have been created in your DB',
+                Message: `${JSON.stringify(item)}`,
+                TopicArn: process.env.SNS_ARN,
+                MessageAttributes: {
+                    price: {
+                        DataType: 'String',
+                        StringValue: filteredPrice,
+                    }
+                }
+            };
+
+         resFromSns = await sns.publish(params).promise();
     }
-        const sns = new SNS({region: 'eu-west-1'});
-        const params = {
-            Subject: 'Products have been created in your DB',
-            Message: `${JSON.stringify(items)}`,
-            TopicArn: process.env.SNS_ARN
-        };
-        // console.log(`****Params: ${JSON.stringify(params)}`);
-        // console.log(`****ITEMS: ${JSON.stringify(items)}`);
-
-        const resFromSns = await sns.publish(params).promise();
-        // console.log(`******* RES FROM SNS: - ${resFromSns}`);
-
         return {
             statusCode: 200,
             headers: {

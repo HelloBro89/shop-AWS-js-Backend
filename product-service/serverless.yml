@@ -57,6 +57,19 @@ resources:
         Protocol: email
         TopicArn:
           Ref: SNSTopic
+        FilterPolicy:
+          price:
+            - lessThousand
+   SNSSubscription2:
+     Type: AWS::SNS::Subscription
+     Properties:
+        Endpoint: hellopeopleworld89@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy:
+          price:
+            - moreThousand
 
 
 functions:
