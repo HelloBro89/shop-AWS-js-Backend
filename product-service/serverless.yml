@@ -57,7 +57,7 @@ resources:
         Protocol: email
         TopicArn:
           Ref: SNSTopic
-        FilterPolicy:
+        FilterPolicy:  # you can use "numeric", then filters straight here, for example: numeric: ['>=', 1000]
           price:
             - lessThousand
    SNSSubscription2:
