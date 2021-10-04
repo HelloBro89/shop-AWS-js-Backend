@@ -82,7 +82,10 @@ export const catalogBatchProcess = async (event) => {
                 }),
             };
         };
-    };
+    } finally {
+        client.end();
+    }
+
 };
 
 

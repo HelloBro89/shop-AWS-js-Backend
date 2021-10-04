@@ -1,0 +1,11 @@
+{
+  "name": "product-service",
+  "version": "1.0.0",
+  "description": "Packaged externals for product-service",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "aws-sdk": "^2.998.0",
+    "pg": "^8.7.1"
+  }
+}
