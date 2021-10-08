@@ -72,9 +72,10 @@ export const importFileParser = async (event) => {
           statusCode: 500,
           headers: {
               'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Headers': '*',
               'Access-Control-Allow-Credentials': true,
           },
-          body: null
+          body: "Unexpected error"
       }
    }
 }

@@ -50,7 +50,7 @@ resources:
      Type: AWS::SQS::Queue
      Properties:
        QueueName: catalogItemsQueue
-
+    
  Outputs:
    SQSQueueArn:
      Value:
@@ -74,7 +74,8 @@ functions:
                 name: true
           authorizer:
             name: tokenAuthorizer
-            arn: '${cf:authorization-service-${self:provider.stage}.basicAuthorizerArn}'
+            # arn: '${cf:authorization-service-${self:provider.stage}.basicAuthorizerArn}'
+            arn: arn:aws:lambda:eu-west-1:316882137799:function:authorization-service-dev-basicAuthorizer
             resultTtlInSeconds: 0
             identitySource: method.request.header.Authorization
             type: token

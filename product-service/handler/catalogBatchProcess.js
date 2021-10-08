@@ -47,6 +47,7 @@ export const catalogBatchProcess = async (event) => {
             statusCode: 200,
             headers: {
                 'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': '*',
                 'Access-Control-Allow-Credentials': true,
             },
             body: JSON.stringify({
@@ -65,6 +66,7 @@ export const catalogBatchProcess = async (event) => {
                 statusCode: 400,
                 headers: {
                     'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': '*',
                     'Access-Control-Allow-Credentials': true,
             },
             body: JSON.stringify({message: "Product data is invalid"}),
@@ -75,6 +77,7 @@ export const catalogBatchProcess = async (event) => {
                 statusCode: 500,
                 headers: {
                     'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Headers': '*',
                     'Access-Control-Allow-Credentials': true,
                  },
                  body: JSON.stringify({
