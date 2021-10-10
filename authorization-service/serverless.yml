@@ -22,11 +22,11 @@ functions:
   basicAuthorizer:
     handler: handler/basicAuthorizer.basicAuthorizer
 
-# resources:
-#   Resources:
-#   Outputs:
-#     basicAuthorizerArn:
-#       Value:
-#         Fn::GetAtt:
-#           - BasicAuthorizerLambdaFunction
-#           - Arn
+resources:
+  Resources:
+  Outputs:
+    basicAuthorizerArn:
+      Value:
+        Fn::GetAtt:
+          - BasicAuthorizerLambdaFunction
+          - Arn
