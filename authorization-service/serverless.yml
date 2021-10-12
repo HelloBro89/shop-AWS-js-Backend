@@ -22,7 +22,8 @@ functions:
   basicAuthorizer:
     handler: handler/basicAuthorizer.basicAuthorizer
 
-resources:
+# optional
+resources: 
   Resources:
   Outputs:
     basicAuthorizerArn:
