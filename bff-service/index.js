@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Express, { response } from 'express';
 import { config } from './common/config.js';
-import cors from 'cors';
+// import cors from 'cors';
 const app = Express();
 const PORT = process.env.PORT || 3000;
 
@@ -10,7 +10,7 @@ console.log(config.PORT);
 
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: false }));
-app.use(cors());
+// app.use(cors());
 
 app.all('/*', /* async */ (req, res) => {
    
