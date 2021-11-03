@@ -1,5 +1,5 @@
 import axios from 'axios';
-import express, { json } from 'express';
+import express from 'express';
 import NodeCache from 'node-cache';
 import { config } from './common/config.js';
 
@@ -11,23 +11,17 @@ app.use(express.urlencoded({ extended: false }));
 
 const cache = new NodeCache({ stdTTL: 10 });
 
-// const verifyPath = (req, res) => {
-//     if (req.originalUrl.startsWith('/products') && req.method === 'GET' && !req.query.productId) {
-//        return cache.set(`${req.originalUrl}`, res.data);
-//     };
-// };
-
-
-const verifyPath = (req, res) => {
+const verifyPath = (req) => {
     if (req.originalUrl.split('/')[1] === 'products' && req.method === 'GET' && !req.query.productId) {
-       return cache.set(`${req.originalUrl}`, res.data);
-    };
+        console.log(`CACHED!`);
+       return true;
+    } 
+    return false;
 };
-
 
 const verifyCache = (req, res, next) => { 
     try {
-        if (req.originalUrl.split('/')[1] === 'products' && req.method === 'GET' && !req.query.productId) {
+        if (verifyPath(req) === true) {
             if (cache.has(req.originalUrl)) {
                 return res.status(200).json(cache.get(req.originalUrl));
             };
@@ -38,36 +32,24 @@ const verifyCache = (req, res, next) => {
     }
 };
 
-// const verifyCache = (req, res, next) => { 
-//     try {
-//         if (req.originalUrl.startsWith('/products') && req.method === 'GET') {
-//             if (cache.has(req.originalUrl)) {
-//                 return res.status(200).json(cache.get(req.originalUrl));
-//             };
-//         };
-//         return next();
-//     } catch (err) {
-//         throw Error (err);
-//     }
-// };
-
 app.all('/*', verifyCache, (req, res) => {
     const recipient = req.originalUrl.split('/')[1].split('?')[0];
     const strictMatch = req.originalUrl.split('/')[2];
     const recipientURL = process.env[recipient];
     
-    if (recipientURL && strictMatch === '' || !strictMatch ) {
+    if ( strictMatch === '' || !strictMatch && recipientURL) {
+
         let finishedURL = '';
 
-            switch (recipient) {
-                case 'cart':
-                    finishedURL = recipientURL;
-                    break;
-                case 'products':
-                    const productId = req.query.productId ? req.query.productId : '';
-                    finishedURL  = `${recipientURL}/${recipient}/${productId}`;
-                    break;
-            }
+        switch (recipient) {
+            case 'cart':
+                finishedURL = recipientURL;
+                break;
+            case 'products':
+                const productId = req.query.productId ? req.query.productId : '';
+                finishedURL  = `${recipientURL}/${recipient}/${productId}`;
+                break;
+        }
 
         const axiosConfig = {
             method: req.method,
@@ -76,29 +58,30 @@ app.all('/*', verifyCache, (req, res) => {
             ...(Object.keys(req.body || {}).length > 0 && {data: req.body})
         }
 
-       console.log(`axiosConfig: ${JSON.stringify(axiosConfig)}`);
+       console.log(`AXIOS CONFIG: ${JSON.stringify(axiosConfig)}`);
 
        axios(axiosConfig)
        .then((response) => {
 
            console.log(`RES FROM AWS: ${response.data}`);
-           verifyPath(req, response);
-           res.json(response.data)
+           if (verifyPath(req) === true) {
+               cache.set(`${req.originalUrl}`, response.data);
+           }
+           res.json(response.data);
        })
        .catch(error => {
            console.log(`ERROR MESSAGE: ${JSON.stringify(error)}`);
-            if (error.response) {
-                const {
-                    status,
-                    data
-                } = error.response;
-                console.log(`CHECK STATUS: ${status}`);
-                res.status(status).json(data);
-            }
+           if (error.response) {
+               const {
+                   status,
+                   data
+               } = error.response;
+               res.status(status).json(data);
+           } 
        });
 
     } else {
-        res.status(500).json({error: 'Cannot process request!'})
+        res.status(500).json({error: 'Cannot process request!'});
     }
 });
 
