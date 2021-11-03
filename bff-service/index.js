@@ -1,37 +1,78 @@
 import axios from 'axios';
-import express from 'express';
+import express, { json } from 'express';
+import NodeCache from 'node-cache';
 import { config } from './common/config.js';
-// import cors from 'cors';
+
 const app = express();
-const PORT = process.env.PORT || 3000;
-
-
+const PORT = config.PORT || 3000;
+ 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-// app.use(cors());
 
-app.all('/*', (req, res) => {
+const cache = new NodeCache({ stdTTL: 10 });
+
+// const verifyPath = (req, res) => {
+//     if (req.originalUrl.startsWith('/products') && req.method === 'GET' && !req.query.productId) {
+//        return cache.set(`${req.originalUrl}`, res.data);
+//     };
+// };
+
+
+const verifyPath = (req, res) => {
+    if (req.originalUrl.split('/')[1] === 'products' && req.method === 'GET' && !req.query.productId) {
+       return cache.set(`${req.originalUrl}`, res.data);
+    };
+};
+
+
+const verifyCache = (req, res, next) => { 
+    try {
+        if (req.originalUrl.split('/')[1] === 'products' && req.method === 'GET' && !req.query.productId) {
+            if (cache.has(req.originalUrl)) {
+                return res.status(200).json(cache.get(req.originalUrl));
+            };
+        };
+        return next();
+    } catch (err) {
+        throw Error (err);
+    }
+};
+
+// const verifyCache = (req, res, next) => { 
+//     try {
+//         if (req.originalUrl.startsWith('/products') && req.method === 'GET') {
+//             if (cache.has(req.originalUrl)) {
+//                 return res.status(200).json(cache.get(req.originalUrl));
+//             };
+//         };
+//         return next();
+//     } catch (err) {
+//         throw Error (err);
+//     }
+// };
+
+app.all('/*', verifyCache, (req, res) => {
     const recipient = req.originalUrl.split('/')[1].split('?')[0];
+    const strictMatch = req.originalUrl.split('/')[2];
     const recipientURL = process.env[recipient];
-    // console.log(`CHECK DATA: ${JSON.stringify(req.body)}`)
-
-    if (recipientURL) {
+    
+    if (recipientURL && strictMatch === '' || !strictMatch ) {
         let finishedURL = '';
-        if (recipient === 'cart') {
-            finishedURL = recipientURL;
-        } else if (recipient === 'products') {
-            const productId = (req.query.productId) ? req.query.productId : '';
-            finishedURL  = `${recipientURL}/${recipient}/${productId}`;
-        }
-    // console.log(`*******: ${req.query.productId}`);
-    // console.log(`FIRST RECIPIENT: ${recipient}`);
-    // console.log(`RECIPIENT URL: ${recipientURL}`);
-    // console.log(`FINISHED URL: ${finishedURL}`);
+
+            switch (recipient) {
+                case 'cart':
+                    finishedURL = recipientURL;
+                    break;
+                case 'products':
+                    const productId = req.query.productId ? req.query.productId : '';
+                    finishedURL  = `${recipientURL}/${recipient}/${productId}`;
+                    break;
+            }
 
         const axiosConfig = {
             method: req.method,
             url: finishedURL,
-            data: Object.keys(req.body).length === 0 ? null : req.body,
+            // data: Object.keys(req.body).length === 0 ? null : req.body,
             ...(Object.keys(req.body || {}).length > 0 && {data: req.body})
         }
 
@@ -39,7 +80,9 @@ app.all('/*', (req, res) => {
 
        axios(axiosConfig)
        .then((response) => {
-           console.log(`res from aws: ${response.data}`);
+
+           console.log(`RES FROM AWS: ${response.data}`);
+           verifyPath(req, response);
            res.json(response.data)
        })
        .catch(error => {
@@ -49,8 +92,8 @@ app.all('/*', (req, res) => {
                     status,
                     data
                 } = error.response;
-                console.log(`CHECK STATUS: ${status}`)
-                res.status(status).json(data)
+                console.log(`CHECK STATUS: ${status}`);
+                res.status(status).json(data);
             }
        });
 
