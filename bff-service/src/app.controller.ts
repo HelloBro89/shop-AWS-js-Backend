@@ -22,7 +22,6 @@ export class AppController {
     const recipient = req.originalUrl.split('/')[1].split('?')[0];
     const objQuery = req.query;
     const productId = objQuery.productId as string;
-
     if (Object.keys(objQuery).length > 0) {
       const strictMatch = req.originalUrl
         .split('/')[1]

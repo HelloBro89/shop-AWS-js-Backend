@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Controller, HttpException, HttpStatus, All } from '@nestjs/common';
 
 @Controller('*')

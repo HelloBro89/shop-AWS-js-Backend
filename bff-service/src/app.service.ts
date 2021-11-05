@@ -1,25 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, CACHE_MANAGER, Inject } from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 import { requestToEb } from './axi.requests';
 import { CreateItemDto } from './dto/create-item.dto';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class AppService {
+  constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
   async getAll(
     recipient: string,
     method: string,
     createItemDto?: CreateItemDto,
     productId?: string,
-  ): Promise<AxiosResponse<any, any>> {
+  ): Promise<any> {
+    const value = await this.cacheManager.get(recipient);
+    if (value !== undefined && method === 'GET' && !productId) {
+      return value;
+    }
+
     const recipientURL = process.env[recipient];
     if (recipientURL) {
       const pathToReq = productId
         ? `${recipientURL}/${recipient}/${productId}`
         : `${recipientURL}/${recipient}`;
       const res = await requestToEb(pathToReq, method, createItemDto);
-      // console.log(res.data);
-      // const test = await res;
-      // console.log(test);
+      if (method === 'GET' && !productId) {
+        await this.cacheManager.set(recipient, res);
+        console.log('Cashed!');
+      }
       return res;
     }
   }

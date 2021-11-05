@@ -1,11 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Module, CacheModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ErrorHandlerController } from './pathHandler/error-handler.controller';
 import { CartController } from './cart/cart.controller';
 
 @Module({
-  imports: [],
+  imports: [CacheModule.register({ ttl: 120 })],
   controllers: [AppController, CartController, ErrorHandlerController],
   providers: [AppService],
 })
