@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Req, Body } from '@nestjs/common';
+import {
+  Controller,
+  Req,
+  Body,
+  All,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 import { Request } from 'express';
 import { AppService } from './app.service';
@@ -7,28 +14,35 @@ import { CreateItemDto } from './dto/create-item.dto';
 @Controller('products')
 export class AppController {
   constructor(private readonly appService: AppService) {}
-
-  @Get()
-  async getAll(@Req() req: Request): Promise<AxiosResponse<any, any>> {
-    const recipient = req.originalUrl.split('/')[1].split('?')[0];
-    // const productId = req.query.productId;
-    const method = req.method;
-    const allUsers = await this.appService.getAll(recipient, method);
-    return allUsers;
-  }
-
-  @Post()
-  async addItem(
-    @Body() createItemDto: CreateItemDto,
+  @All()
+  async getAll(
     @Req() req: Request,
+    @Body() createItemDto?: CreateItemDto,
   ): Promise<AxiosResponse<any, any>> {
     const recipient = req.originalUrl.split('/')[1].split('?')[0];
+    const objQuery = req.query;
+    const productId = objQuery.productId as string;
+
+    if (Object.keys(objQuery).length > 0) {
+      const strictMatch = req.originalUrl
+        .split('/')[1]
+        .split('?')[1]
+        .split('=')[0];
+      if (strictMatch !== 'productId') {
+        throw new HttpException(
+          'Incorrect key in query string parameters, must be < productId > !',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
+
     const method = req.method;
-    const addedItem = await this.appService.addItem(
+    const res = await this.appService.getAll(
       recipient,
       method,
       createItemDto,
+      productId,
     );
-    return addedItem;
+    return res;
   }
 }
