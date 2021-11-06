@@ -50,6 +50,11 @@ export class AppService {
     const recipientURL = process.env[recipient];
     if (recipientURL) {
       return requestToEb(recipientURL, method);
+    } else {
+      throw new HttpException(
+        `Environment ${recipient} not found!`,
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 }
