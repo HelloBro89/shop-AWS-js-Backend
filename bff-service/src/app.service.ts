@@ -1,4 +1,10 @@
-import { Injectable, CACHE_MANAGER, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  CACHE_MANAGER,
+  Inject,
+  HttpStatus,
+  HttpException,
+} from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 import { requestToEb } from './axi.requests';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -29,6 +35,11 @@ export class AppService {
         console.log('Cashed!');
       }
       return res;
+    } else {
+      throw new HttpException(
+        `Environment ${recipient} not found!`,
+        HttpStatus.NOT_FOUND,
+      );
     }
   }
 
