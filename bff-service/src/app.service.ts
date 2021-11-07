@@ -49,7 +49,11 @@ export class AppService {
   ): Promise<AxiosResponse<any, any>> {
     const recipientURL = process.env[recipient];
     if (recipientURL) {
-      return requestToEb(recipientURL, method);
+      const res = requestToEb(
+        `${recipientURL}/api/profile/${recipient}`,
+        method,
+      );
+      return res;
     } else {
       throw new HttpException(
         `Environment ${recipient} not found!`,
