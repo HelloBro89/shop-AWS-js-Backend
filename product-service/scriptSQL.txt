@@ -1,0 +1,88 @@
+--								создание таблицы "Products"
+
+--create table products (
+--    id uuid primary key default uuid_generate_v4(),
+--    title text not null,
+--    description text,
+--    price integer
+--)
+
+--							 создание табдицы "Stock"
+
+--create table stocks (
+--    product_id uuid,
+--    count integer,
+--    foreign key ("product_id") references "products" (id)
+--)
+
+--                       	 создание данных в таблице "Products"
+
+-- returning <column name> - вернёт значение только что созданного поля(строки) если добавить в конец запроса
+
+
+--insert into products (title, description, price ) values
+--('Salar de Uyuni, Bolivia', 'It is considered one of the most extreme and remarkable vistas in all of South America, if not Earth', 500),
+--('Mountains Zhangye Danxia, China', 'It is known for its unusual cliff colors, which are smooth, sharp and several hundred meters high', 10),
+--('Plitvice Lakes National Park, Croatia', 'It is the oldest and largest national park in the Republic of Croatia', 23),
+--('Amalfi Coast, Italy', 'Italy is Amalfi Coast boasts a classic Mediterranean landscape, a sensual blend of both natural and cultural wonders', 15),
+--('Arashiyama bamboo forest, Japan', 'It is eaten in many dishes in Japanese cuisine. The stalks here have attracted visitors from all over Japan since', 23),
+--('Machu Picchu, Peru', 'It is a 15th-century Inca citadel, located in the Eastern Cordillera of southern Peru, on a 2,430-meter mountain ridge', 15),
+--('Bagan, Myanmar', 'Today the area is home to more than 2,500 Buddhist stupas, temples and monasteries...', 23),
+--('Pamukkale, Turkey', 'Pamukkale is a traveller s delight and a geological phenomenon', 15)
+
+--								создание данный в таблице "Stock"
+
+--insert into stocks (product_id, count) values
+--('e28608e7-2f9a-4271-bee8-b63ff38ba143', 3),
+--('318a1fe4-c7e3-4106-80ec-a0517ee7b1ce', 5),
+--('a9482378-728b-4f30-a3be-16a95a3fb560', 6),
+--('23c6a863-5ee7-4e66-839a-999b0fbdfdd0', 3),
+--('3c55a932-2037-45b0-a3ad-d58e056c57ad', 5),
+--('ad79e64d-d750-4541-b874-150e70850af0', 6),
+--('2555b45d-ae6f-474c-9dff-c3126ed44a1e', 2),
+--('8571dee5-cc7c-4ff4-96d8-0711590d4c58', 1)
+
+--создание новой БД из в текущем подключении к AWS RDS и чтобы подкдючится к новой,
+--нужно переподключиться к RDS заново с указанием новаой db
+--create database <name db>
+
+--					удаление таблицы
+
+--drop table <name table>
+
+
+-- 					команда установки зависимостей(uuid)
+
+--create extension if not exists "uuid-ossp"; 
+
+-- 					команда запросов
+
+--select * from Products
+
+-- 					команда запросов с джоином
+
+--select * from Products p inner join Stocks s on p.id = s.product_id
+
+-- 					склеить нужные колонки из двух таблиц и соединить вместе
+
+--select id, count, price, title, description
+--from products p left join stocks s on p.id = s.product_id 
+
+-- 					склеить нужные колонки, отфильтровав по нужному ID из двух таблиц и соединить вместе
+--select id, count, price, title, description from products p left join stocks s on p.id = s.product_id where id in ('50dcaee6-952d-4329-88d4-59bbfd981c9c') 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

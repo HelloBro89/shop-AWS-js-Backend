@@ -1,0 +1,104 @@
+service: product-service
+
+custom:
+  webpack:
+    webpackConfig: webpack.config.js
+    includeModules: true
+  # catalogItemsQueue:
+  #   Ref: catalogItemsQueue
+
+plugins:
+    - serverless-dotenv-plugin
+    - serverless-webpack
+
+frameworkVersion: '2'
+useDotenv: true
+configValidationMode: error
+
+variablesResolutionMode: 20210326
+provider:
+  name: aws
+  runtime: nodejs14.x
+  lambdaHashingVersion: 20201221
+  stage: dev
+  region: eu-west-1
+
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "sqs:*"
+      Resource:
+        - "${cf:import-service-dev.SQSQueueArn}"
+    - Effect: "Allow"
+      Action:
+        - "sns:*"
+      Resource:
+        Ref: SNSTopic
+
+  environment:
+    # SQS_URL:
+    #   - "${cf:import-service-dev.SQSQueue}"
+    SNS_ARN:
+      Ref: SNSTopic
+
+resources:
+ Resources:
+
+   SNSTopic:
+     Type: AWS::SNS::Topic
+     Properties:
+        TopicName: createProductTopic
+
+   SNSSubscription:
+     Type: AWS::SNS::Subscription
+     Properties:
+        Endpoint: valoshyny@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy:  # you can use "numeric", then filters straight here, for example: numeric: ['>=', 1000]
+          price:
+            - lessThousand
+   SNSSubscription2:
+     Type: AWS::SNS::Subscription
+     Properties:
+        Endpoint: hellopeopleworld89@gmail.com
+        Protocol: email
+        TopicArn:
+          Ref: SNSTopic
+        FilterPolicy:
+          price:
+            - moreThousand
+
+
+functions:
+  getAllProducts:
+    handler: handler/getAllProducts.getAllProducts
+    events:
+      - http:
+          path: /products
+          method: get
+          cors: true
+  getAllProductsById:
+    handler: handler/getProductsById.getProductsById
+    events:
+      - http:
+          path: /products/{productId}
+          method: get
+          cors: true
+  addNewItem:
+    handler: handler/addNewItem.addNewItem
+    events:
+      - http:
+          path: /products
+          method: post
+          cors: true
+
+  catalogBatchProcess:
+    handler: handler/catalogBatchProcess.catalogBatchProcess
+    events:
+      - sqs:
+           batchSize: 5
+           arn:
+             - "${cf:import-service-dev.SQSQueueArn}"

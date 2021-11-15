@@ -1,0 +1,35 @@
+{
+  "name": "product-service",
+  "version": "1.0.0",
+  "description": "BackEnd  for FE shop-app with microservice AWS",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --config=./jest.config.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HelloBro89/BackEndAWS-mono_shop-app.git"
+  },
+  "author": "HelloBro89",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HelloBro89/BackEndAWS-mono_shop-app/issues"
+  },
+  "homepage": "https://github.com/HelloBro89/BackEndAWS-mono_shop-app#readme",
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "aws-sdk-mock": "^5.4.0",
+    "babel-loader": "^8.2.2",
+    "jest": "^27.0.6",
+    "serverless-dotenv-plugin": "^3.9.0",
+    "serverless-webpack": "^5.5.1",
+    "webpack": "^5.51.1",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.998.0",
+    "pg": "^8.7.1",
+    "source-map-support": "^0.5.19"
+  }
+}
