@@ -1,5 +1,5 @@
 # Online shop (backend)
-## This repository contains only a backend for an online store built on ABC. This appendix is in the process of being finalized, so some features have not yet been implemented.
+## This repository contains only a backend for an online store built on AWS. This app is in the process of being finalized, so some features have not yet been implemented.
 ## Additional links:
 - link to frontend part https://github.com/HelloBro89/shop-AWS-React-ts-frontend
 - link to cart-api-service https://github.com/HelloBro89/cart-api-backend-shop
