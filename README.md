@@ -19,3 +19,4 @@
 - SQS/SNS
 - Authorizer
 - NestJS
+- JavaScript/TypeScript
