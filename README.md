@@ -18,5 +18,6 @@
 - EB(Elastic Beanstalk)
 - SQS/SNS
 - Authorizer
+- Docker
 - NestJS
 - JavaScript/TypeScript
